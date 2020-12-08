@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
+import 'package:chat_app/services/SocketService.dart';
+import 'package:chat_app/services/AuthServices.dart';
+
 import 'package:chat_app/helpers/ShowAlert.dart';
-import 'package:chat_app/services/auth_services.dart';
 import 'package:chat_app/widgets/Labels.dart';
 import 'package:chat_app/widgets/Logo.dart';
 import 'package:chat_app/widgets/CustomInput.dart';
@@ -53,6 +55,7 @@ class __FormState extends State<_Form> {
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context);
+    final socketService = Provider.of<SocketService>(context);
     return Container(
       margin: EdgeInsets.only(top: 40.0),
       padding: EdgeInsets.symmetric(horizontal: 50.0),
@@ -81,7 +84,12 @@ class __FormState extends State<_Form> {
                     FocusScope.of(context).unfocus();
                       final loginOk = await authService.register(
                           nameCtrl.text.trim(), emailCtrl.text.trim(), passCtrl.text.trim());
-                          loginOk == true ? Navigator.pushReplacementNamed(context, 'USERS') : showAlert(context, 'Register incorrect', loginOk);
+                          if (loginOk) {
+                            socketService.connect();                            
+                            Navigator.pushReplacementNamed(context, 'USERS');
+                          } else {
+                            showAlert(context, 'Register incorrect', loginOk);
+                          }
                     }),
         ],
       ),

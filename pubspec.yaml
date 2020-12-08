@@ -32,6 +32,7 @@ dependencies:
   provider:
   http:
   flutter_secure_storage:
+  socket_io_client:
 
 dev_dependencies:
   flutter_test:
